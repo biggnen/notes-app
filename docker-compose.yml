@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: notes-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notes
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      PGDATA: /var/lib/postgresql/data/notes/
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./scripts/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dbuser -d notes"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
