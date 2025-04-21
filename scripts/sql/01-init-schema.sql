@@ -1,5 +1,3 @@
--- create the database tables
-
 -- documents table - stores main document information
 create table documents (
     document_id uuid primary key default gen_random_uuid(),
@@ -11,7 +9,8 @@ create table documents (
 -- document content table - stores the actual text content
 create table document_content (
     document_id uuid primary key references documents(document_id) on delete cascade,
-    content text
+    content text,
+    plain_text_content text
 );
 
 -- topics table - maps documents to topics/tags

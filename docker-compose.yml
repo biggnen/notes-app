@@ -1,22 +1,43 @@
 services:
-  postgres:
-    image: postgres:14
+  notes-postgres:
     container_name: notes-postgres
+    image: postgres:latest
     restart: unless-stopped
     environment:
       POSTGRES_DB: notes
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: dbpassword
-      PGDATA: /var/lib/postgresql/data/notes/
-    ports:
-      - "5432:5432"
     volumes:
+      - dbdata:/var/lib/postgresql/data
       - ./scripts/sql:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dbuser -d notes"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    networks:
+      - postgres-internal
+
+  notes-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      - notes-postgres
+    deploy:
+      mode: replicated
+      replicas: 3
+    networks:
+      - postgres-internal
+
+  consul:
+    container_name: consul
+    image: consul:1.15.4
+    restart: unless-stopped
+    command: "consul agent -dev -client=0.0.0.0"
+    ports:
+      - "8500:8500"
+    networks:
+      - postgres-internal
+
+networks:
+  postgres-internal:
 
 volumes:
-  postgres-data:
+  dbdata:
+    driver: local
