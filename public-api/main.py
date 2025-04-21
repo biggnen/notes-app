@@ -21,6 +21,7 @@ users_collection = db["users"]
 
 http_client = httpx.AsyncClient()
 
+consul = Consul(host="consul", port=8500)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -125,7 +126,6 @@ async def login_user(user: User):
 
 @app.get("/apis")
 async def list_apis(current_user: dict = Depends(get_current_user)):
-    consul = Consul(host="consul", port=8500)
     services = consul.agent.services()
     api_services = {
         service: details["Address"]
@@ -139,7 +139,6 @@ async def list_apis(current_user: dict = Depends(get_current_user)):
 async def create_document(
     doc: Document, current_user: dict = Depends(get_current_user)
 ):
-    consul = Consul(host="consul", port=8500)
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
@@ -170,7 +169,6 @@ async def create_document(
 async def get_document(
     document_id: uuid.UUID, current_user: dict = Depends(get_current_user)
 ):
-    consul = Consul(host="consul", port=8500)
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
@@ -201,7 +199,6 @@ async def update_document(
     doc: DocumentUpdate,
     current_user: dict = Depends(get_current_user),
 ):
-    consul = Consul(host="consul", port=8500)
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
@@ -232,7 +229,6 @@ async def update_document(
 async def delete_document(
     document_id: uuid.UUID, current_user: dict = Depends(get_current_user)
 ):
-    consul = Consul(host="consul", port=8500)
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():

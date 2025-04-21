@@ -47,7 +47,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'POST' \
-          'http://localhost:8000/token' \
+          'http://localhost:8080/token' \
           -H 'Content-Type: application/json' \
           -d '{
           "username": "your_username",
@@ -71,7 +71,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'GET' \
-          'http://localhost:8000/documents' \
+          'http://localhost:8080/documents' \
           -H 'Authorization: Bearer <jwt_token>'
         ```
 
@@ -79,7 +79,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'GET' \
-            'http://localhost:8000/documents/{document_id}' \
+            'http://localhost:8080/documents/{document_id}' \
             -H 'Authorization: Bearer <jwt_token>'
         ```
 
@@ -88,7 +88,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
 
         ```
         curl -X 'POST' \
-          'http://localhost:8000/documents' \
+          'http://localhost:8080/documents' \
           -H 'Content-Type: application/json' \
           -H 'Authorization: Bearer <jwt_token>' \
           -d '{
@@ -101,7 +101,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'PUT' \
-          'http://localhost:8000/documents/{document_id}' \
+          'http://localhost:8080/documents/{document_id}' \
           -H 'Content-Type: application/json' \
           -H 'Authorization: Bearer <jwt_token>' \
           -d '{
@@ -114,7 +114,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'DELETE' \
-          'http://localhost:8000/documents/{document_id}' \
+          'http://localhost:8080/documents/{document_id}' \
           -H 'Authorization: Bearer <jwt_token>'
         ```
 
@@ -126,7 +126,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'POST' \
-          'http://localhost:8000/documents/{document_id}/attachments' \
+          'http://localhost:8080/documents/{document_id}/attachments' \
           -H 'Authorization: Bearer <jwt_token>' \
           -F 'file=@/path/to/your/file.txt'
         ```
@@ -135,7 +135,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'DELETE' \
-          'http://localhost:8000/documents/{document_id}/attachments/{attachment_id}' \
+          'http://localhost:8080/documents/{document_id}/attachments/{attachment_id}' \
           -H 'Authorization: Bearer <jwt_token>'
         ```
 
@@ -147,7 +147,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'POST' \
-          'http://localhost:8000/documents/{document_id}/relationships' \
+          'http://localhost:8080/documents/{document_id}/relationships' \
           -H 'Content-Type: application/json' \
           -H 'Authorization: Bearer <jwt_token>' \
           -d '{
@@ -160,7 +160,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'GET' \
-            'http://localhost:8000/documents/{document_id}/relationships' \
+            'http://localhost:8080/documents/{document_id}/relationships' \
             -H 'Authorization: Bearer <jwt_token>'
         ```
 
@@ -172,7 +172,7 @@ The public API is a FastAPI service that allows you to perform CRUD operations o
     - Request:
         ```
         curl -X 'GET' \
-            'http://localhost:8000/documents/search?query=search_query' \
+            'http://localhost:8080/documents/search?query=search_query' \
             -H 'Authorization: Bearer <jwt_token>'
         ```
 
