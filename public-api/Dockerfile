@@ -10,7 +10,7 @@ EXPOSE 8080
 
 ENV MONGO_URI mongodb://mongodb:27017
 
-ENV CONSUL_HTTP_ADDR http://consul:8500
+ENV CONSUL_HTTP_ADDR consul:8500
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
 

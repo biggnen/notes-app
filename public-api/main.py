@@ -19,7 +19,7 @@ db = client["auth_db"]
 users_collection = db["users"]
 
 
-http_client = httpx.AsyncClient()
+http_client = httpx.AsyncClient(follow_redirects=True)
 
 consul = Consul(host="consul", port=8500)
 
@@ -63,6 +63,11 @@ class Attachment(BaseModel):
     filename: str
     file_type: str
     file_size: int
+
+
+class RelationshipCreate(BaseModel):
+    target_document_id: UUID
+    relationship_type: str = "link"
 
 
 def get_password_hash(password: str) -> str:
@@ -135,6 +140,13 @@ async def list_apis(current_user: dict = Depends(get_current_user)):
     return api_services
 
 
+@app.post("/documents/{doc_id}/relationships")
+async def add_relationship(
+    rel: RelationshipCreate, current_user: dict = Depends(get_current_user)
+):
+    return {"detail": "Relationship added"}
+
+
 @app.post("/documents")
 async def create_document(
     doc: Document, current_user: dict = Depends(get_current_user)
@@ -142,7 +154,7 @@ async def create_document(
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
-        if service == "notes-api" and "api" in details["Tags"]:
+        if details["Service"] == "notes-api" and "api" in details["Tags"]:
             notes_api_address = f"http://{details['Address']}:{details['Port']}"
             break
 
@@ -165,6 +177,34 @@ async def create_document(
         )
 
 
+@app.get("/documents")
+async def get_document(
+    document_id: uuid.UUID, current_user: dict = Depends(get_current_user)
+):
+    services = consul.agent.services()
+    notes_api_address = None
+    for service, details in services.items():
+        if details["Service"] == "notes-api" and "api" in details["Tags"]:
+            notes_api_address = f"http://{details['Address']}:{details['Port']}"
+            break
+
+    if not notes_api_address:
+        raise HTTPException(status_code=500, detail="Notes API service not found")
+
+    try:
+        response = await http_client.get(f"{notes_api_address}/documents")
+        response.raise_for_status()
+        return response.json()
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(
+            status_code=e.response.status_code, detail="Error retrieving document"
+        )
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error connecting to Notes API: {e}"
+        )
+
+
 @app.get("/documents/{document_id}")
 async def get_document(
     document_id: uuid.UUID, current_user: dict = Depends(get_current_user)
@@ -172,7 +212,7 @@ async def get_document(
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
-        if service == "notes-api" and "api" in details["Tags"]:
+        if details["Service"] == "notes-api" and "api" in details["Tags"]:
             notes_api_address = f"http://{details['Address']}:{details['Port']}"
             break
 
@@ -202,7 +242,7 @@ async def update_document(
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
-        if service == "notes-api" and "api" in details["Tags"]:
+        if details["Service"] == "notes-api" and "api" in details["Tags"]:
             notes_api_address = f"http://{details['Address']}:{details['Port']}"
             break
 
@@ -232,7 +272,7 @@ async def delete_document(
     services = consul.agent.services()
     notes_api_address = None
     for service, details in services.items():
-        if service == "notes-api" and "api" in details["Tags"]:
+        if details["Service"] == "notes-api" and "api" in details["Tags"]:
             notes_api_address = f"http://{details['Address']}:{details['Port']}"
             break
 

@@ -43,6 +43,7 @@ async def on_startup():
         service_id=sid,
         port=port,
         tags=["fastapi", "api", "notes"],
+        address=ip,
         check={
             "http": f"http://{ip}:{port}/health",
             "interval": "10s",
