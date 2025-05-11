@@ -1,6 +1,6 @@
 # Document Management System with Public API
 
-This is a FastAPI-based document system example that integrates with a PostgreSQL database and uses JWT authentication for securing the endpoints.
+This is a FastAPI-based document system example that integrates with a PostgreSQL database and uses JWT authentication for securing the endpoints. More details you may find in our report: `APZ_25_Project.pdf`.
 
 ### Table of Contents
 - [Setup Instructions](#setup-instructions)
