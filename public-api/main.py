@@ -66,7 +66,7 @@ class Attachment(BaseModel):
 
 
 class RelationshipCreate(BaseModel):
-    target_document_id: UUID
+    target_document_id: uuid.UUID
     relationship_type: str = "link"
 
 
